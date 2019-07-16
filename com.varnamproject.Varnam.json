@@ -1,0 +1,48 @@
+{
+    "app-id": "com.varnamproject.Varnam",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "18.08",
+    "sdk": "org.freedesktop.Sdk",
+    "command": "varnamc",
+    "modules": [
+        {
+            "name": "varnam",
+            "buildsystem": "cmake",
+            "builddir": true,
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/varnamproject/libvarnam.git",
+                    "branch": "master"
+                }
+            ]
+        },
+        {
+            "name": "ruby",
+            "config-opts": [
+                "--disable-install-doc"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.3.tar.gz",
+                    "sha256": "577fd3795f22b8d91c1d4e6733637b0394d4082db659fccf224c774a2b1c82fb"
+                }
+            ]
+        },
+        {
+            "name": "rubygems",
+            "buildsystem": "simple",
+            "build-commands": [
+                "gem install --local ffi-1.11.1.gem --no-document"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://rubygems.org/gems/ffi-1.11.1.gem",
+                    "sha256": "90ae2a7fe7ac4c0af30650fba8b75d93ff3611803c4937248118797ae5edbb1a"
+                }
+            ]
+        }
+    ]
+}
