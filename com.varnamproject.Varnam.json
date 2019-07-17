@@ -6,18 +6,6 @@
     "command": "varnamc",
     "modules": [
         {
-            "name": "varnam",
-            "buildsystem": "cmake",
-            "builddir": true,
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "https://github.com/varnamproject/libvarnam.git",
-                    "branch": "master"
-                }
-            ]
-        },
-        {
             "name": "ruby",
             "config-opts": [
                 "--disable-install-doc"
@@ -41,6 +29,37 @@
                     "type": "file",
                     "url": "https://rubygems.org/gems/ffi-1.11.1.gem",
                     "sha256": "90ae2a7fe7ac4c0af30650fba8b75d93ff3611803c4937248118797ae5edbb1a"
+                }
+            ]
+        },
+        {
+            "name": "varnam",
+            "buildsystem": "cmake-ninja",
+            "builddir": false,
+            "post-install": [
+                "find schemes/* -type f ! -name '*.*' -exec ./varnamc --compile {} \\;",
+                "cmake -P cmake_install.cmake"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/subins2000/libvarnam.git",
+                    "branch": "master"
+                }
+            ]
+        },
+        {
+            "name": "varnam-import",
+            "buildsystem": "simple",
+            "build-commands": [
+                "tar -xf ml.full.tar.gz",
+                "varnamc -s ml --import-learnings-from ."
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "http://mirror.rackdc.com/savannah/varnamproject/words/ml.full.tar.gz",
+                    "sha256": "b4d7208066a1395b033be5223ffbbc7759aabec6a7a2c60d9297cdd71c56dffd"
                 }
             ]
         }
