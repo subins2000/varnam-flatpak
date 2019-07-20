@@ -1,9 +1,20 @@
 {
     "app-id": "com.varnamproject.Varnam",
-    "runtime": "org.freedesktop.Platform",
-    "runtime-version": "18.08",
-    "sdk": "org.freedesktop.Sdk",
-    "command": "varnamc",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.32",
+    "sdk": "org.gnome.Sdk",
+    "command": "varnam",
+    "finish-args": [
+        "--share=ipc",
+        "--own-name=org.freedesktop.IBus.EnchantPython",
+        "--talk-name=org.freedesktop.DBus",
+        "--talk-name=org.freedesktop.IBus",
+        "--talk-name=org.freedesktop.portal.IBus",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+    ],
     "modules": [
         {
             "name": "ruby",
@@ -52,14 +63,63 @@
             "name": "varnam-import",
             "buildsystem": "simple",
             "build-commands": [
-                "tar -xf ml.full.tar.gz",
-                "varnamc -s ml --import-learnings-from ."
+                "tar -xf ml.full.tar.gz"
             ],
             "sources": [
                 {
                     "type": "file",
                     "url": "http://mirror.rackdc.com/savannah/varnamproject/words/ml.full.tar.gz",
                     "sha256": "b4d7208066a1395b033be5223ffbbc7759aabec6a7a2c60d9297cdd71c56dffd"
+                }
+            ]
+        },
+        {
+            "name": "varnam-ibus",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DIBUS_INSTALL_PREFIX=/app"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/subins2000/libvarnam-ibus.git"
+                }
+            ]
+        },
+        {
+            "name": "ibus-tmpl",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mv engine /app/bin/"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "file:///home/mint/Other/Projects/GitHub/ibus-tmpl"
+                }
+            ]
+        },
+        {
+            "name": "varnam-wrapper",
+            "buildsystem": "simple",
+            "build-commands": [
+                "chmod a+x varnam.sh",
+                "mv varnam.sh /app/bin/varnam"
+            ],
+            "sources": [
+                {
+                    "type": "script",
+                    "dest-filename": "varnam.sh",
+                    "commands": [
+                        "if [ \"$1\" = \"engine\" ]; then",
+                        "   shift;",
+                        "   cd /app/bin/engine",
+                        "   python3 main.py \"$@\"",
+                        "   #/app/bin/ibus-engine-varnam \"$@\"",
+                        "else",
+                        "   /app/bin/varnamc \"$@\"",
+                        "fi"
+                    ]
                 }
             ]
         }
