@@ -127,8 +127,8 @@
                 "python3 setup.py install --prefix=${FLATPAK_DEST}"
             ],
             "post-install": [
-                "chmod a+x varnam.sh",
-                "mv varnam.sh /app/bin/varnam-wrapper",
+                "chmod +x varnam-wrapper.sh",
+                "cp varnam-wrapper.sh /app/bin/varnam-wrapper",
                 "install -Dm644 com.varnamproject.Varnam.appdata.xml /app/share/appdata/com.varnamproject.Varnam.appdata.xml",
                 "install -Dm644 com.varnamproject.Varnam.desktop /app/share/applications/com.varnamproject.Varnam.desktop",
                 "install -Dm644 varnam.png /app/share/icons/hicolor/48x48/apps/com.varnamproject.Varnam.png"
@@ -140,16 +140,8 @@
                     "branch": "master"
                 },
                 {
-                    "type": "script",
-                    "dest-filename": "varnam.sh",
-                    "commands": [
-                        "if [ \"$1\" = \"varnamc\" ]; then",
-                        "   shift;",
-                        "   /app/bin/varnamc \"$@\"",
-                        "else",
-                        "   /app/bin/varnam \"$@\"",
-                        "fi"
-                    ]
+                    "type": "file",
+                    "path": "varnam-wrapper.sh"
                 },
                 {
                     "type": "file",
