@@ -6,7 +6,8 @@
     "command": "varnam-wrapper",
     "finish-args": [
         "--share=network",
-        "--socket=x11"
+        "--socket=x11",
+        "--filesystem=~/.local/share/varnam"
     ],
     "modules": [
         {
@@ -41,6 +42,7 @@
             "buildsystem": "cmake-ninja",
             "builddir": false,
             "post-install": [
+                "export VARNAM_SUGGESTIONS_DIR=/etc/varnam",
                 "./varnamc --compile schemes/ml",
                 "./varnamc --compile schemes/hi",
                 "./varnamc --compile schemes/ta",
@@ -53,21 +55,6 @@
                     "type": "git",
                     "url": "https://github.com/subins2000/libvarnam.git",
                     "branch": "master"
-                }
-            ]
-        },
-        {
-            "name": "varnam-import",
-            "buildsystem": "simple",
-            "build-commands": [
-                "tar -xf ml.full.tar.gz",
-                "varnamc -s ml --import-learnings-from ."
-            ],
-            "sources": [
-                {
-                    "type": "file",
-                    "url": "http://mirror.rackdc.com/savannah/varnamproject/words/ml.full.tar.gz",
-                    "sha256": "b4d7208066a1395b033be5223ffbbc7759aabec6a7a2c60d9297cdd71c56dffd"
                 }
             ]
         },
@@ -117,6 +104,29 @@
                     "type": "file",
                     "url": "https://files.pythonhosted.org/packages/98/d2/6fa19239ff1ab072af40ebf339acd91fb97f34617c2ee625b8e34bf42393/gevent-websocket-0.10.1.tar.gz",
                     "sha256": "7eaef32968290c9121f7c35b973e2cc302ffb076d018c9068d2f5ca8b2d85fb0"
+                }
+            ]
+        },
+        {
+            "name": "varnam-import",
+            "buildsystem": "simple",
+            "build-options" : {
+                "env": [
+                    "VARNAM_SUGGESTIONS_DIR=suggestions"
+                ]
+            },
+            "build-commands": [
+                "install -d /app/share/com.varnamproject.Varnam/suggestions",
+                "tar -xf ml.full.tar.gz",
+                "varnamc -s ml --import-learnings-from 0.words.txt",
+                "rm $VARNAM_SUGGESTIONS_DIR/*.learnings-*",
+                "mv $VARNAM_SUGGESTIONS_DIR/* /app/share/com.varnamproject.Varnam/suggestions"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "http://mirror.rackdc.com/savannah/varnamproject/words/ml.full.tar.gz",
+                    "sha256": "b4d7208066a1395b033be5223ffbbc7759aabec6a7a2c60d9297cdd71c56dffd"
                 }
             ]
         },
