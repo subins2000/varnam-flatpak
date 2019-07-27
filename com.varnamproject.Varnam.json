@@ -118,7 +118,7 @@
             "build-commands": [
                 "install -d /app/share/com.varnamproject.Varnam/suggestions",
                 "tar -xf ml.full.tar.gz",
-                "varnamc -s ml --import-learnings-from 0.words.txt",
+                "varnamc -s ml --import-learnings-from .",
                 "rm $VARNAM_SUGGESTIONS_DIR/*.learnings-*",
                 "mv $VARNAM_SUGGESTIONS_DIR/* /app/share/com.varnamproject.Varnam/suggestions"
             ],
